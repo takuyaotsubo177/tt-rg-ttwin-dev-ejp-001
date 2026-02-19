@@ -1,0 +1,15 @@
+# secrets
+**/.env
+**/*.pem
+**/*.key
+
+# artifacts
+*.zip
+
+# python
+__pycache__/
+*.pyc
+.venv/
+
+# ide
+.vscode/

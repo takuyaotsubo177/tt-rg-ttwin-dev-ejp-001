@@ -1,0 +1,127 @@
+env:
+  AZURE_OPENAI_API_KEY: ???
+  AZURE_SEARCH_KEY: ???
+  AZURE_COSMOS_KEY: ???
+  AZURE_STORAGE_CONNECT: ???
+subscription:
+  name: R&D
+group:
+  name: twinnerwtnb2
+  token: txvd32ui2kybi
+openai:
+  name: share-openai-koreacentral
+  key: ${env.AZURE_OPENAI_API_KEY}
+  version: 2024-02-01
+  endpoint: https://${openai.name}.openai.azure.com/
+  embed:
+    name: text-embedding-3-large
+  gpt41:
+    name: gpt-4.1
+  gpt41_mini:
+    name: gpt-4.1-mini
+search:
+  name: bci-search-rsz7asftanayg
+  key: ${env.AZURE_SEARCH_KEY}
+  endpoint: https://${search.name}.search.windows.net/
+  index:
+    twinner:
+      name: ${group.name}
+      semantic_name: base
+      role:
+        user:
+          - public_knowledge
+          - private_knowledge
+cosmos:
+  name: ${group.name}-cosmos-${group.token}
+  key: ${env.AZURE_COSMOS_KEY}
+  endpoint: https://${cosmos.name}.documents.azure.com:443/
+  db: log
+  container: twin-bot
+  partition_key: /type
+storage:
+  name: storage${group.token}
+  connect: ${env.AZURE_STORAGE_CONNECT}
+  container:
+    base: ${group.name}-container-${group.token}
+bot:
+  name: 渡邊ツイン
+  version: ver0.0.1
+  persona:
+    name:
+    # 会社名は必須
+    company: トヨタ車体
+    department: 内装設計部内装開発室業務改革開発品質グループ
+    position: グループ長
+    responsibility: 内装設計部インパネ経験者
+    specialty: インパネ設計業務
+  available_modes:
+    - 通常チャット
+  search:
+    categories:
+      normal:
+        - observation
+        - peer_impression
+        - slide
+        - interview
+      doc_page_review:
+        - observation
+        - peer_impression
+        - slide
+        - slide_page
+        - interview
+  context:
+    descriptions:
+      slide: お手本となるスライドの構成（優先度順）
+      slide_page: お手本となるスライド1ページの構成（優先度順）
+      observation: リアル匠は過去に以下の経験・考えをしていました（優先度順）
+      peer_impression: 以下は同僚が記入したリアル匠の経験・考えです（優先度順）
+      interview: リアル匠との直接インタビューから抽出された知識・ノウハウです（優先度順）
+  ui:
+    status_messages:
+      InitStateNode: '考えをまとめています...'
+      BuildContextNode: '考えをまとめています...'
+      CreateAnswerByRAGNode: '回答を生成しています...'
+    feedback:
+      rating_labels:
+        5: '😍 忠実に再現'
+        4: '😀 部分的に再現'
+        3: '😐 一般的な回答'
+        2: '🙁 一部間違い'
+        1: '😠 間違い'
+      comment_placeholders:
+        5: 'どの部分が特に良かったですか？'
+        4: 'どの部分が良く、どの部分がそうでなかったですか？'
+        3: 'より良くするためにどう改善すべきですか？'
+        2: 'どの部分が間違っていましたか？正しくはどうあるべきでしたか？'
+        1: '何が完全に間違っていましたか？期待した回答はどのようなものでしたか？'
+  default_params:
+    search:
+      top: 50
+      thresh: 1.2
+    context:
+      # カテゴリ*5くらいが丁度良さそう
+      max_chars: 25000
+      weights:
+        relevance: 0.5
+        importance: 0.3
+        recency: 0.2
+      half_life_days: 30
+    preset: 'バランス型'
+    max_conversation_chars: 10000
+  presets:
+    'バランス型':
+      weight_relevance: 0.5
+      weight_importance: 0.3
+      weight_recency: 0.2
+    '関連度重視型':
+      weight_relevance: 0.7
+      weight_importance: 0.2
+      weight_recency: 0.1
+    '新規度重視型':
+      weight_relevance: 0.3
+      weight_importance: 0.2
+      weight_recency: 0.5
+    '個性重視型':
+      weight_relevance: 0.3
+      weight_importance: 0.6
+      weight_recency: 0.1

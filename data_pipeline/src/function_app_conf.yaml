@@ -1,0 +1,41 @@
+env:
+  AZURE_OPENAI_API_KEY: ???
+  AZURE_SEARCH_KEY: ???
+  AZURE_STORAGE_CONNECT: ???
+group:
+  name: tt-rg-ttwin-dev-ejp-001
+  #token: 
+openai:
+  name: share-openai-koreacentral
+  key: ${env.AZURE_OPENAI_API_KEY}
+  version: 2024-02-01
+  endpoint: https://${openai.name}.openai.azure.com/
+  embed:
+    name: text-embedding-3-large
+    base: text-embedding-3-large
+  gpt41:
+    name: gpt-4.1
+  gpt41_mini:
+    name: gpt-4.1-mini
+storage:
+  name: ttstttwindevejp001
+  connect: ${env.AZURE_STORAGE_CONNECT}
+  container:
+    base: ${group.name}-container
+search:
+  name: bci-search-rsz7asftanayg
+  key: ${env.AZURE_SEARCH_KEY}
+  endpoint: https://${search.name}.search.windows.net/
+pipeline:
+  ExpertTwinIndexer:
+    index_name: ${group.name}
+    lang: ja
+    semantic_name: base
+persona:
+  name:
+  # 会社名は必須
+  company: トヨタ車体
+  department: 内装設計部内装開発室業務改革開発品質グループ
+  position: グループ長
+  responsibility: 内装設計部インパネ経験者
+  specialty: インパネ設計業務

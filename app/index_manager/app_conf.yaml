@@ -1,0 +1,72 @@
+env:
+  AZURE_OPENAI_API_KEY: ???
+  AZURE_SEARCH_KEY: ???
+  AZURE_STORAGE_CONNECT: ???
+  AZURE_COSMOS_KEY: ???
+group:
+  name: twinnerwtnb2
+  token: txvd32ui2kybi
+openai:
+  name: share-openai-koreacentral
+  key: ${env.AZURE_OPENAI_API_KEY}
+  version: 2024-02-01
+  endpoint: https://${openai.name}.openai.azure.com/
+  embed:
+    name: text-embedding-3-large
+    base: text-embedding-3-large
+  gpt41:
+    name: gpt-4.1
+  gpt41_mini:
+    name: gpt-4.1-mini
+storage:
+  name: storage${group.token}
+  connect: ${env.AZURE_STORAGE_CONNECT}
+  container:
+    base: ${group.name}-container-${group.token}
+search:
+  name: bci-search-rsz7asftanayg
+  key: ${env.AZURE_SEARCH_KEY}
+  endpoint: https://${search.name}.search.windows.net/
+  index:
+    name: ${group.name}
+    lang: ja
+    semantic_name: base
+cosmos:
+  name: ${group.name}-cosmos-${group.token}
+  key: ${env.AZURE_COSMOS_KEY}
+  endpoint: https://${cosmos.name}.documents.azure.com:443/
+  db: log
+  container: index-manager
+  partition_key: /type
+app:
+  name: index-manager
+  version: 0.0.1
+  description: 渡邊ツインの管理者用アプリです。
+  category_options:
+    create:
+      - observation
+      - peer_impression
+      # - slide
+    search:
+      - observation
+      - peer_impression
+      - reflection
+      - slide
+      - slide_page
+      - interview
+    document_upload:
+      - slide
+  category_labels:
+    observation: 日記
+    peer_impression: 日記（他者視点）
+    reflection: 振り返り
+    slide: お手本スライド
+    slide_page: お手本スライドページ
+    interview: インタビュー
+  document_settings:
+    slide:
+      container: knowledge
+      path_prefix: slide/
+      file_types:
+        - pdf
+      description: お手本スライド（PDF）
